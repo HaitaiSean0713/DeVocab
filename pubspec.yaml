@@ -1,0 +1,49 @@
+name: devocab
+description: "DeVocab - 英語字根字首字尾 AI 學習應用程式"
+publish_to: 'none'
+version: 2.0.4+1
+
+environment:
+  sdk: ^3.11.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # UI & Navigation
+  go_router: ^14.7.2
+  google_fonts: ^6.2.1
+
+  # State Management
+  provider: ^6.1.2
+
+  # Backend
+  supabase_flutter: ^2.8.4
+  google_sign_in: ^6.2.2
+
+  # Storage
+  flutter_secure_storage: ^9.2.4
+  shared_preferences: ^2.3.5
+
+  # Networking
+  http: ^1.2.2
+
+  # TTS
+  flutter_tts: ^4.2.0
+
+  # Utils
+  intl: ^0.20.2
+  share_plus: ^12.0.1
+  image_picker: ^1.2.1
+  flutter_dotenv: ^6.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+    - .env

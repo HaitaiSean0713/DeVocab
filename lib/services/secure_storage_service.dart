@@ -1,0 +1,22 @@
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+class SecureStorageService {
+  static const _keyApiKey = 'gemini_api_key';
+
+  static const _storage = FlutterSecureStorage(
+    aOptions: AndroidOptions(encryptedSharedPreferences: true),
+    iOptions: IOSOptions(accessibility: KeychainAccessibility.first_unlock),
+  );
+
+  Future<String?> getApiKey() => _storage.read(key: _keyApiKey);
+
+  Future<void> saveApiKey(String apiKey) =>
+      _storage.write(key: _keyApiKey, value: apiKey);
+
+  Future<void> deleteApiKey() => _storage.delete(key: _keyApiKey);
+
+  Future<bool> hasApiKey() async {
+    final key = await getApiKey();
+    return key != null && key.isNotEmpty;
+  }
+}
