@@ -30,10 +30,10 @@ class SettingsProvider extends ChangeNotifier {
 
   SettingsProvider({SecureStorageService? storage})
       : _storage = storage ?? SecureStorageService() {
-    load();
+    _init();
   }
 
-  Future<void> load() async {
+  Future<void> _init() async {
     _hasApiKey = await _storage.hasApiKey();
     final prefs = await SharedPreferences.getInstance();
     _userName = prefs.getString(_getUserNameKey()) ?? 'Learning...';
