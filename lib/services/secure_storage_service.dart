@@ -1,9 +1,13 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SecureStorageService {
-  static const _keyApiKey = 'gemini_api_key';
+  String get _keyApiKey {
+    final userId = Supabase.instance.client.auth.currentUser?.id ?? 'anonymous';
+    return 'gemini_api_key_$userId';
+  }
 
-  static const _storage = FlutterSecureStorage(
+  final _storage = const FlutterSecureStorage(
     aOptions: AndroidOptions(encryptedSharedPreferences: true),
     iOptions: IOSOptions(accessibility: KeychainAccessibility.first_unlock),
   );
