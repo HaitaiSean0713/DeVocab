@@ -20,8 +20,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.5' # 使用與專案相容的版本
-          channel: 'stable'
+          channel: 'stable' # 讓 GitHub Actions 自動抓取最新版 stable 的 Flutter，以符合 pubspec 的 SDK 需求
 
       - name: Install Dependencies
         run: flutter pub get
