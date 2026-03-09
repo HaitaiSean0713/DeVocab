@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kIsWeb, kReleaseMode;
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -11,14 +11,17 @@ class AuthService {
   static const _webClientId =
       '507592226975-hve20kvcu7o2ij05bj14t7bfhmn6n96d.apps.googleusercontent.com';
 
-  /// Google Sign-In → Web 使用 Supabase OAuth 重新導向；App 端使用 idToken
   Future<void> signInWithGoogle() async {
     if (kIsWeb) {
       // 在 Web 平台上，使用 Supabase 內建的 OAuth 重新導向是最穩定的作法
       // 不需要拿 idToken，也不會受限於 Google Identity Services 的按鈕限制
+      final redirectUrl = kReleaseMode 
+          ? 'https://haitaisean0713.github.io/DeVocab/' 
+          : Uri.base.origin;
+          
       await _supabase.auth.signInWithOAuth(
         OAuthProvider.google,
-        redirectTo: Uri.base.origin, // 會自動導回你目前的 localhost
+        redirectTo: redirectUrl,
       );
     } else {
       // 以下是 iOS/Android 平台適用的 ID Token 邏輯

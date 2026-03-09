@@ -6,7 +6,7 @@ class GeminiParseException implements Exception {
   final String message;
   const GeminiParseException(this.message);
   @override
-  String toString() => 'GeminiParseException: $message';
+  String toString() => message;
 }
 
 class GeminiService {
@@ -91,8 +91,11 @@ class GeminiService {
     );
 
     if (response.statusCode != 200) {
-      throw GeminiParseException(
-          'API error ${response.statusCode}: ${response.body}');
+      final bodyLower = response.body.toLowerCase();
+      if (response.statusCode == 429 || bodyLower.contains('quota') || bodyLower.contains('exhausted')) {
+        throw const GeminiParseException('已超出可用api額度，請更換api金鑰');
+      }
+      throw GeminiParseException('API error ${response.statusCode}');
     }
 
     final responseJson = jsonDecode(response.body) as Map<String, dynamic>;

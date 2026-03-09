@@ -6,6 +6,7 @@ import '../providers/word_provider.dart';
 import '../providers/favorites_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:go_router/go_router.dart';
 
 class WordDetailScreen extends StatefulWidget {
   final String word;
@@ -162,8 +163,8 @@ class _WordDetailScreenState extends State<WordDetailScreen> {
                             )
                           else
                             ElevatedButton(
-                              onPressed: _loadWord,
-                              child: const Text('重試'),
+                              onPressed: () => context.push('/setup-api'),
+                              child: const Text('更換API'),
                             ),
                         ],
                       ),
