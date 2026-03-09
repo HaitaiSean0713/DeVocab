@@ -1,15 +1,19 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/word_data.dart';
 
 class FavoritesService {
-  static const _key = 'favorites';
+  String _getKey() {
+    final userId = Supabase.instance.client.auth.currentUser?.id ?? 'anonymous';
+    return 'favorites_$userId';
+  }
 
   Future<SharedPreferences> get _prefs => SharedPreferences.getInstance();
 
   Future<List<FavoriteWord>> getFavorites() async {
     final prefs = await _prefs;
-    final raw = prefs.getStringList(_key) ?? [];
+    final raw = prefs.getStringList(_getKey()) ?? [];
     return raw
         .map((s) => FavoriteWord.fromJson(jsonDecode(s) as Map<String, dynamic>))
         .toList();
@@ -26,7 +30,7 @@ class FavoritesService {
     if (!favorites.any((f) => f.word.toLowerCase() == word.word.toLowerCase())) {
       favorites.insert(0, word);
       await prefs.setStringList(
-          _key, favorites.map((f) => jsonEncode(f.toJson())).toList());
+          _getKey(), favorites.map((f) => jsonEncode(f.toJson())).toList());
     }
   }
 
@@ -35,11 +39,11 @@ class FavoritesService {
     final favorites = await getFavorites();
     favorites.removeWhere((f) => f.word.toLowerCase() == word.toLowerCase());
     await prefs.setStringList(
-        _key, favorites.map((f) => jsonEncode(f.toJson())).toList());
+        _getKey(), favorites.map((f) => jsonEncode(f.toJson())).toList());
   }
 
   Future<void> clearAll() async {
     final prefs = await _prefs;
-    await prefs.remove(_key);
+    await prefs.remove(_getKey());
   }
 }

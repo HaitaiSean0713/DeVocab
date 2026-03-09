@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../services/secure_storage_service.dart';
 
 class SettingsProvider extends ChangeNotifier {
@@ -17,6 +18,16 @@ class SettingsProvider extends ChangeNotifier {
   String _userAvatar = '🍌';
   String get userAvatar => _userAvatar;
 
+  String _getUserNameKey() {
+    final userId = Supabase.instance.client.auth.currentUser?.id ?? 'anonymous';
+    return 'user_name_$userId';
+  }
+
+  String _getUserAvatarKey() {
+    final userId = Supabase.instance.client.auth.currentUser?.id ?? 'anonymous';
+    return 'user_avatar_$userId';
+  }
+
   SettingsProvider({SecureStorageService? storage})
       : _storage = storage ?? SecureStorageService() {
     _init();
@@ -25,15 +36,15 @@ class SettingsProvider extends ChangeNotifier {
   Future<void> _init() async {
     _hasApiKey = await _storage.hasApiKey();
     final prefs = await SharedPreferences.getInstance();
-    _userName = prefs.getString('user_name') ?? 'Learning...';
-    _userAvatar = prefs.getString('user_avatar') ?? '🍌';
+    _userName = prefs.getString(_getUserNameKey()) ?? 'Learning...';
+    _userAvatar = prefs.getString(_getUserAvatarKey()) ?? '🍌';
     notifyListeners();
   }
 
   Future<void> updateProfile(String name, String avatar) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('user_name', name);
-    await prefs.setString('user_avatar', avatar);
+    await prefs.setString(_getUserNameKey(), name);
+    await prefs.setString(_getUserAvatarKey(), avatar);
     _userName = name;
     _userAvatar = avatar;
     notifyListeners();
