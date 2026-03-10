@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import '../services/auth_service.dart';
 import '../theme/app_theme.dart';
 
@@ -104,7 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 48),
                     // Title
                     Text(
-                      '登入與註冊',
+                      '登入',
                       style: AppTextStyles.headingLarge.copyWith(
                         color: colorScheme.onSurface,
                         letterSpacing: 2,

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../screens/login_screen.dart';
-import '../screens/register_screen.dart';
 import '../screens/api_key_screen.dart';
 import '../screens/home_screen.dart';
 import '../screens/word_detail_screen.dart';
@@ -23,14 +22,6 @@ class AppRouter {
         pageBuilder: (context, state) => _fadeTransition(
           state,
           const LoginScreen(),
-        ),
-      ),
-      GoRoute(
-        path: '/register',
-        name: 'register',
-        pageBuilder: (context, state) => _fadeTransition(
-          state,
-          const RegisterScreen(),
         ),
       ),
       GoRoute(
@@ -101,9 +92,9 @@ class AppRouter {
     final hasKey = await _storage.hasApiKey();
     final currentPath = state.uri.path;
 
-    final isAuthPage = currentPath == '/login' || currentPath == '/register';
+    final isAuthPage = currentPath == '/login';
 
-    // 1. Not logged in: must go to /login or /register
+    // 1. Not logged in: must go to /login
     if (session == null) {
       return isAuthPage ? null : '/login';
     }
