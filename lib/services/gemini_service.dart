@@ -42,6 +42,7 @@ class GeminiService {
       "english": "第二個例句",
       "chinese": "第二個例句中文翻譯"
     },
+    {
       "english": "第三個例句",
       "chinese": "第三個例句中文翻譯"
     }
@@ -66,7 +67,7 @@ class GeminiService {
 7. 如果 "$word" 拼字錯誤或根本不存在，不要回傳上述格式，請回傳這兩種可能之一的 JSON：
    若能推測正確單字：{ "error": "not_found", "suggestion": "正確拼寫單字" }
    若無法推測：{ "error": "not_found" }
-8. 嚴格只回傳 JSON，不要任何說明文字
+8. 嚴格只回傳合法 JSON 格式，不允許任何額外文字解說或 Markdown 代碼區塊
 ''';
 
   Future<WordData> analyzeWord(String word) async {
@@ -106,11 +107,18 @@ class GeminiService {
 
     final content = candidates[0]['content']['parts'][0]['text'] as String;
 
-    // Strip potential markdown code blocks
+    // 清理 markdown 區塊與不合法的多餘字元
     String cleaned = content.trim();
-    if (cleaned.startsWith('```')) {
-      cleaned = cleaned.replaceAll(RegExp(r'```json?\n?'), '').replaceAll('```', '').trim();
+
+    // 取出真正包含 JSON 物件的片段 (從第一個 { 到最後一個 })
+    final startIndex = cleaned.indexOf('{');
+    final endIndex = cleaned.lastIndexOf('}');
+    if (startIndex != -1 && endIndex != -1 && endIndex >= startIndex) {
+      cleaned = cleaned.substring(startIndex, endIndex + 1);
     }
+
+    // 移除陣列或物件結尾的逗號 (這是 LLM 常犯的語法錯誤，會導致 dart jsonDecode 失敗)
+    cleaned = cleaned.replaceAll(RegExp(r',\s*}'), '}').replaceAll(RegExp(r',\s*]'), ']');
 
     Map<String, dynamic> parsed;
     try {
