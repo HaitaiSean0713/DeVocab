@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import "package:supabase_flutter/supabase_flutter.dart" as supabase_flutter;
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import '../theme/app_theme.dart';
@@ -323,8 +322,8 @@ class _SettingItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final color = isDestructive ? Colors.red.shade400 : Theme.of(context).colorScheme.onSurface;
-    final bgColor = isDestructive 
-        ? Colors.red.withOpacity(0.1) 
+    final bgColor = isDestructive
+        ? Colors.red.withOpacity(0.1)
         : (isDark ? kSurfaceDark : Colors.white);
 
     return Material(
@@ -369,4 +368,3 @@ class _SettingItem extends StatelessWidget {
     );
   }
 }
-

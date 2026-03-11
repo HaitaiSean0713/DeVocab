@@ -9,6 +9,9 @@ class SettingsProvider extends ChangeNotifier {
   bool _hasApiKey = false;
   bool get hasApiKey => _hasApiKey;
 
+  String _userEmail = '';
+  String get userEmail => _userEmail;
+
   String _userName = 'Learning...';
   String get userName => _userName;
 
@@ -60,4 +63,9 @@ class SettingsProvider extends ChangeNotifier {
   }
 
   Future<String?> getApiKey() => _storage.getApiKey();
+
+  void setUserEmail(String email) {
+    _userEmail = email;
+    notifyListeners();
+  }
 }

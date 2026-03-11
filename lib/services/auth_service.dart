@@ -51,13 +51,6 @@ class AuthService {
     }
   }
 
-  /// Email Magic Link
-  Future<void> signInWithEmail(String email, {Map<String, dynamic>? data}) {
-    return _supabase.auth.signInWithOtp(
-      email: email.trim(),
-      data: data,
-    );
-  }
 
   /// 登出
   Future<void> signOut() => _supabase.auth.signOut();
