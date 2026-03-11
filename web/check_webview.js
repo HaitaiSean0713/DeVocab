@@ -84,14 +84,14 @@ if (isInAppBrowser()) {
     copyBtn.style.boxShadow = '0 4px 6px rgba(0,0,0,0.3)';
 
     copyBtn.onclick = function() {
-      navigator.clipboard.writeText(window.location.href).then(function() {
+      navigator.clipboard.writeText(window.location.origin + '/DeVocab/').then(function() {
         copyBtn.innerText = '已複製！請貼上至 Chrome 或 Safari';
         copyBtn.style.backgroundColor = '#34A853';
       }).catch(function(err) {
         // Fallback for clipboard
         var dummy = document.createElement('input');
         document.body.appendChild(dummy);
-        dummy.value = window.location.href;
+        dummy.value = window.location.origin + '/DeVocab/';
         dummy.select();
         document.execCommand('copy');
         document.body.removeChild(dummy);
