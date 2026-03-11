@@ -33,8 +33,22 @@ class SettingsProvider extends ChangeNotifier {
   Future<void> _init() async {
     _hasApiKey = await _storage.hasApiKey();
     final prefs = await SharedPreferences.getInstance();
-    _userName = prefs.getString(_getUserNameKey()) ?? 'Learning...';
-    _userAvatar = prefs.getString(_getUserAvatarKey()) ?? '🍌';
+
+    // Cloud sync logic: try fetching from Supabase user_metadata first
+    final user = Supabase.instance.client.auth.currentUser;
+    if (user != null && user.userMetadata != null) {
+      _userName = user.userMetadata!['user_name'] ?? prefs.getString(_getUserNameKey()) ?? 'Learning...';
+      _userAvatar = user.userMetadata!['user_avatar'] ?? prefs.getString(_getUserAvatarKey()) ?? '🍌';
+
+      // Cache locally
+      await prefs.setString(_getUserNameKey(), _userName);
+      await prefs.setString(_getUserAvatarKey(), _userAvatar);
+    } else {
+      // Fallback
+      _userName = prefs.getString(_getUserNameKey()) ?? 'Learning...';
+      _userAvatar = prefs.getString(_getUserAvatarKey()) ?? '🍌';
+    }
+
     notifyListeners();
   }
 
@@ -45,6 +59,19 @@ class SettingsProvider extends ChangeNotifier {
     _userName = name;
     _userAvatar = avatar;
     notifyListeners();
+
+    // Sync to Supabase cloud
+    final user = Supabase.instance.client.auth.currentUser;
+    if (user != null) {
+      try {
+        await Supabase.instance.client.auth.updateUser(UserAttributes(data: {
+          'user_name': name,
+          'user_avatar': avatar,
+        }));
+      } catch (e) {
+        print('Failed to sync profile to cloud: $e');
+      }
+    }
   }
 
   Future<void> saveApiKey(String key) async {
