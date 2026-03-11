@@ -42,7 +42,7 @@ class GeminiService {
       "english": "第二個例句",
       "chinese": "第二個例句中文翻譯"
     },
-      "english": "第三個例句",
+      {"english": "第三個例句",
       "chinese": "第三個例句中文翻譯"
     }
   ],
@@ -108,8 +108,12 @@ class GeminiService {
 
     // Strip potential markdown code blocks
     String cleaned = content.trim();
-    if (cleaned.startsWith('```')) {
-      cleaned = cleaned.replaceAll(RegExp(r'```json?\n?'), '').replaceAll('```', '').trim();
+
+    // Extract just the JSON object part to be resilient against markdown or leading/trailing text
+    final startIndex = cleaned.indexOf('{');
+    final endIndex = cleaned.lastIndexOf('}');
+    if (startIndex != -1 && endIndex != -1 && endIndex >= startIndex) {
+      cleaned = cleaned.substring(startIndex, endIndex + 1);
     }
 
     Map<String, dynamic> parsed;
