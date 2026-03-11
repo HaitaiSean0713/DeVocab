@@ -119,6 +119,7 @@ class GeminiService {
 
     // 移除陣列或物件結尾的逗號 (這是 LLM 常犯的語法錯誤，會導致 dart jsonDecode 失敗)
     cleaned = cleaned.replaceAll(RegExp(r',\s*}'), '}').replaceAll(RegExp(r',\s*]'), ']');
+    cleaned = cleaned.replaceAll(RegExp(r'\}\s*\{'), '},{');
 
     Map<String, dynamic> parsed;
     try {
